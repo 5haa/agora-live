@@ -2,14 +2,22 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import time
+from dotenv import load_dotenv
 from agora_token_builder import RtcTokenBuilder
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Get Agora credentials from environment variables
-AGORA_APP_ID = os.environ.get('182923c551cb4d8884532d1e17a293a9', '182923c551cb4d8884532d1e17a293a9')
-AGORA_APP_CERTIFICATE = os.environ.get('918f3ed9ad8f406393b0ea7aff5d1c70', '918f3ed9ad8f406393b0ea7aff5d1c70')
+AGORA_APP_ID = os.environ.get('AGORA_APP_ID')
+AGORA_APP_CERTIFICATE = os.environ.get('AGORA_APP_CERTIFICATE')
+
+# Validate that required environment variables are set
+if not AGORA_APP_ID or not AGORA_APP_CERTIFICATE:
+    raise ValueError("Missing required environment variables: AGORA_APP_ID and AGORA_APP_CERTIFICATE must be set in .env file or environment")
 
 @app.route('/generate-token', methods=['POST'])
 def generate_token():
